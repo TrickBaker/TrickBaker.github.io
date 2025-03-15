@@ -1,0 +1,100 @@
+/* EditContact.css - Styling for the contact editing page */
+
+.edit-contact-container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.edit-card {
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  transition: all 0.3s ease;
+}
+
+.edit-card .card-header {
+  background: linear-gradient(90deg, #3a7bd5 0%, #00d2ff 100%);
+  color: white;
+  padding: 1.5rem;
+  border-bottom: none;
+}
+
+.edit-card .card-body {
+  padding: 2rem;
+}
+
+.section-title {
+  color: #3a7bd5;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+}
+
+.form-label {
+  font-weight: 500;
+  color: #555;
+  display: flex;
+  align-items: center;
+}
+
+.form-control, .form-select {
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #e0e0e0;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+  box-shadow: 0 0 0 3px rgba(58, 123, 213, 0.2);
+  border-color: #3a7bd5;
+}
+
+.bank-account-section {
+  background-color: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 10px;
+  border: 1px solid #e0e0e0;
+}
+
+/* Loading container */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .edit-card .card-body {
+    padding: 1.5rem 1rem;
+  }
+  
+  .section-title {
+    font-size: 1.25rem;
+  }
+  
+  .bank-account-section {
+    padding: 1rem;
+  }
+}
+
+/* Animation for success message */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.alert-success {
+  animation: fadeIn 0.5s ease-in-out;
+} 

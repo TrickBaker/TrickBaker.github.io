@@ -1,0 +1,26 @@
+{
+  "name": "Anton",
+  "title": "Solution Architecture",
+  "company": "De heus",
+  "email": "haminton46@gmail.com",
+  "phone": "+84 782884650",
+  "address": "188/1 Nguyễn Văn Hưởng, Phường Thảo Điền, Quận 2",
+  "website": "https://johndoe.example.com",
+  "bio": "Experienced product manager with a passion for creating user-friendly digital experiences.",
+  "socials": {
+    "linkedin": "https://linkedin.com/in/johndoe",
+    "twitter": "https://twitter.com/johndoe",
+    "github": "https://github.com/johndoe",
+    "instagram": "https://instagram.com/johndoe"
+  },
+  "profileImage": "https://rawzonestorage.blob.core.windows.net/d-public/users/avatars/07832af9743bb893c93ec37d5174ebc6ea2e1975_1741337099976.jpg",
+  "bankAccounts": [
+    {
+      "bankName": "",
+      "accountNumber": "",
+      "accountType": "Checking",
+      "routingNumber": "",
+      "swift": ""
+    }
+  ]
+}

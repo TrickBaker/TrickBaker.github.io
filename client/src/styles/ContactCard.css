@@ -1,0 +1,813 @@
+/* ContactCard.css - Modern digital business card styling */
+
+/* Container styling */
+.contact-card-container {
+  padding: 2rem 1rem;
+}
+
+/* Mobile-specific styles for full-screen card */
+@media (max-width: 768px) {
+  .contact-card-container {
+    padding: 0;
+    margin: 0;
+    max-width: 100%;
+    width: 100%;
+  }
+  
+  /* Remove top padding when navbar is hidden */
+  body .contact-card-container {
+    padding-top: 0;
+  }
+  
+  /* Make card take full screen height and width */
+  .digital-card-wrapper {
+    min-height: 100vh;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .profile-card {
+    max-width: 100%;
+    width: 100%;
+    min-height: 100vh;
+    border-radius: 0;
+    margin: 0;
+    box-shadow: none;
+  }
+  
+  /* Adjust tab content padding for mobile */
+  .tab-content {
+    padding: 1.5rem 1rem;
+  }
+  
+  /* Adjust profile header for mobile */
+  .profile-header {
+    padding-top: 1rem;
+  }
+  
+  /* Make tabs more touch-friendly on mobile */
+  .card-header-tabs {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  
+  .tab-item {
+    padding: 1.2rem 0.5rem;
+  }
+  
+  /* Adjust contact items for mobile */
+  .contact-item {
+    padding: 0.8rem;
+    margin-bottom: 0.8rem;
+  }
+  
+  /* Ensure content doesn't overflow on small screens */
+  .contact-info .value {
+    word-break: break-word;
+  }
+  
+  /* Adjust action buttons for mobile */
+  .action-buttons {
+    flex-direction: column;
+  }
+  
+  .action-button {
+    width: 100%;
+    margin-bottom: 0.8rem;
+  }
+  
+  /* Adjust QR code size for mobile */
+  .qr-container {
+    max-width: 100%;
+  }
+  
+  .qr-code {
+    max-width: 200px;
+    height: auto;
+  }
+  
+  /* Ensure mobile view fills the entire viewport */
+  .mobile-view .digital-card-wrapper,
+  .mobile-view .profile-card {
+    min-height: 100vh;
+  }
+}
+
+.digital-card-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 1000px;
+}
+
+/* Main card styling */
+.profile-card {
+  width: 100%;
+  max-width: 800px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
+  overflow: hidden;
+  position: relative;
+  transform-style: preserve-3d;
+  transform: translateY(20px);
+  opacity: 0;
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.profile-card.animate {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Card header tabs */
+.card-header-tabs {
+  display: flex;
+  background: linear-gradient(90deg, #3a7bd5 0%, #00d2ff 100%);
+  color: white;
+}
+
+.tab-item {
+  flex: 1;
+  text-align: center;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 500;
+}
+
+.tab-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.tab-item.active {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Tab content */
+.tab-content {
+  padding: 2rem;
+}
+
+.tab-title {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #3a7bd5;
+  font-weight: 600;
+}
+
+/* Profile header */
+.profile-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+@media (min-width: 768px) {
+  .profile-header {
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+  }
+}
+
+.profile-image-container {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin-bottom: 1.5rem;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+@media (min-width: 768px) {
+  .profile-image-container {
+    margin-right: 2rem;
+    margin-bottom: 0;
+  }
+}
+
+.profile-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  transition: transform 0.5s ease;
+}
+
+.profile-image-container:hover .profile-image {
+  transform: scale(1.05);
+}
+
+.profile-image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #3a7bd5 0%, #00d2ff 100%);
+  color: white;
+  font-size: 3rem;
+  font-weight: bold;
+}
+
+.profile-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 50%;
+  box-shadow: inset 0 0 20px rgba(58, 123, 213, 0.6);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.profile-image-container:hover .profile-glow {
+  opacity: 1;
+}
+
+.profile-title {
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .profile-title {
+    text-align: left;
+  }
+}
+
+.profile-title .name {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(90deg, #3a7bd5 0%, #00d2ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.title-badge, .company-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 0.8rem;
+  margin: 0.25rem;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.title-badge {
+  background-color: #e9f5ff;
+  color: #3a7bd5;
+}
+
+.company-badge {
+  background-color: #f0f0f0;
+  color: #555;
+}
+
+.title-badge .icon, .company-badge .icon {
+  margin-right: 0.5rem;
+}
+
+/* Contact details */
+.contact-details {
+  margin: 2rem 0;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  background-color: #f8f9fa;
+}
+
+.contact-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.icon-container {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+  flex-shrink: 0;
+}
+
+.email-item .icon-container {
+  background-color: #ffebee;
+  color: #f44336;
+}
+
+.phone-item .icon-container {
+  background-color: #e8f5e9;
+  color: #4caf50;
+}
+
+.website-item .icon-container {
+  background-color: #e3f2fd;
+  color: #2196f3;
+}
+
+.address-item .icon-container {
+  background-color: #fff3e0;
+  color: #ff9800;
+}
+
+.id-item .icon-container {
+  background-color: #e8eaf6;
+  color: #3f51b5;
+}
+
+.tax-item .icon-container {
+  background-color: #f3e5f5;
+  color: #9c27b0;
+}
+
+.contact-icon {
+  font-size: 1.2rem;
+}
+
+.contact-info {
+  flex-grow: 1;
+}
+
+.contact-info .label {
+  font-size: 0.8rem;
+  color: #666;
+  margin-bottom: 0.2rem;
+}
+
+.contact-info .value {
+  font-weight: 500;
+  color: #333;
+  word-break: break-word;
+}
+
+.contact-info a.value {
+  color: #3a7bd5;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.contact-info a.value:hover {
+  color: #00d2ff;
+  text-decoration: underline;
+}
+
+/* Bio section */
+.bio-section {
+  background-color: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 10px;
+  margin-bottom: 2rem;
+}
+
+.bio-section h4 {
+  color: #3a7bd5;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.bio-section p {
+  color: #555;
+  line-height: 1.6;
+}
+
+/* Bank accounts section */
+.bank-accounts-section {
+  margin-bottom: 2rem;
+}
+
+.bank-accounts-section h4 {
+  color: #3a7bd5;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.bank-account-item {
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.bank-account-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.bank-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.bank-icon {
+  font-size: 1.5rem;
+  color: #3a7bd5;
+  margin-right: 1rem;
+}
+
+.bank-header h5 {
+  margin: 0;
+  font-weight: 600;
+  color: #333;
+}
+
+.bank-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.bank-detail {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+}
+
+.detail-label {
+  font-weight: 500;
+  color: #666;
+  flex-basis: 40%;
+}
+
+.detail-value {
+  font-weight: 500;
+  color: #333;
+  flex-basis: 60%;
+  text-align: right;
+}
+
+/* Social links */
+.social-links {
+  margin-bottom: 2rem;
+}
+
+.social-links h4 {
+  text-align: center;
+  color: #3a7bd5;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.social-icons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.social-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: white;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.social-icon:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.social-icon.linkedin {
+  background: #0077b5;
+}
+
+.social-icon.twitter {
+  background: #1da1f2;
+}
+
+.social-icon.github {
+  background: #333;
+}
+
+.social-icon.instagram {
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+}
+
+/* Action buttons */
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 576px) {
+  .action-buttons {
+    flex-direction: row;
+    justify-content: center;
+  }
+}
+
+.action-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 50px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  flex: 1;
+}
+
+.action-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.button-icon {
+  font-size: 1.1rem;
+}
+
+.save-button {
+  background: linear-gradient(90deg, #3a7bd5 0%, #00d2ff 100%);
+  border: none;
+}
+
+.copy-button {
+  border: 2px solid #3a7bd5;
+  color: #3a7bd5;
+}
+
+.copy-button:hover {
+  background-color: rgba(58, 123, 213, 0.1);
+}
+
+/* Login prompt */
+.login-prompt {
+  margin-top: 2rem;
+}
+
+.login-link {
+  color: #3a7bd5;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.login-link:hover {
+  text-decoration: underline;
+}
+
+/* Share tab */
+.share-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.qr-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.qr-container {
+  background-color: white;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+}
+
+.qr-code {
+  display: block;
+}
+
+.qr-instructions {
+  color: #666;
+  text-align: center;
+}
+
+.share-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  max-width: 300px;
+}
+
+@media (min-width: 576px) {
+  .share-buttons {
+    flex-direction: row;
+    max-width: none;
+  }
+}
+
+.share-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 50px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  flex: 1;
+}
+
+.share-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* NFC tab */
+.nfc-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.nfc-instructions {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.nfc-icon-container {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3a7bd5 0%, #00d2ff 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  box-shadow: 0 10px 20px rgba(58, 123, 213, 0.3);
+}
+
+.nfc-icon {
+  font-size: 2.5rem;
+  color: white;
+}
+
+.nfc-instructions h4 {
+  text-align: center;
+  color: #3a7bd5;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+.instruction-steps {
+  margin-bottom: 1.5rem;
+  padding-left: 1.5rem;
+}
+
+.instruction-steps li {
+  margin-bottom: 0.75rem;
+  color: #555;
+}
+
+.url-display {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  word-break: break-all;
+}
+
+.url-display code {
+  color: #3a7bd5;
+  font-size: 0.9rem;
+  margin-right: 0.5rem;
+}
+
+.copy-url-btn {
+  flex-shrink: 0;
+}
+
+.nfc-note {
+  text-align: center;
+  color: #666;
+}
+
+/* Card footer */
+.card-footer {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  text-align: center;
+  border-top: 1px solid #eee;
+}
+
+.powered-by {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.brand {
+  font-weight: 700;
+  background: linear-gradient(90deg, #3a7bd5 0%, #00d2ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Loading animation */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+}
+
+.loading-card {
+  background: white;
+  padding: 3rem;
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.loading-pulse {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle, rgba(58, 123, 213, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
+  animation: pulse 2s infinite;
+}
+
+.loading-spinner {
+  width: 3rem;
+  height: 3rem;
+}
+
+.loading-text {
+  color: #3a7bd5;
+  font-weight: 500;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.7;
+  }
+  70% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0.7;
+  }
+}
+
+/* Print styles */
+@media print {
+  .card-header-tabs, .action-buttons, .share-buttons, .card-footer {
+    display: none !important;
+  }
+  
+  .profile-card {
+    box-shadow: none !important;
+    border: 1px solid #ddd;
+  }
+  
+  .contact-item:hover {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+  
+  .social-icon:hover {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+} 
