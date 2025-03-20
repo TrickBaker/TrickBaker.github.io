@@ -4,12 +4,22 @@
   <meta charset="utf-8">
   <title>Redirecting to InfoCrypting</title>
   <script>
-    // Simple redirect to root
-    window.location.href = '/InfoCrypting/';
+    // Single Page Apps for GitHub Pages
+    // https://github.com/rafgraph/spa-github-pages
+    var pathSegmentsToKeep = 1;
+    var l = window.location;
+    
+    // Redirect to the correct path
+    l.replace(
+      l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+      l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
+      l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/') +
+      (l.search ? '&' + l.search.slice(1) : '') +
+      l.hash
+    );
   </script>
 </head>
 <body>
-  <h1>Redirecting...</h1>
-  <p>If you are not redirected automatically, <a href="/InfoCrypting/">click here</a>.</p>
+  Redirecting...
 </body>
 </html> 

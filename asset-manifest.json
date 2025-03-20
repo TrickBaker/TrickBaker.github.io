@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "./static/css/main.0befd8b6.css",
-    "main.js": "./static/js/main.2fd37a2f.js",
-    "static/js/453.a14ab0f4.chunk.js": "./static/js/453.a14ab0f4.chunk.js",
-    "index.html": "./index.html",
-    "main.0befd8b6.css.map": "./static/css/main.0befd8b6.css.map",
-    "main.2fd37a2f.js.map": "./static/js/main.2fd37a2f.js.map",
-    "453.a14ab0f4.chunk.js.map": "./static/js/453.a14ab0f4.chunk.js.map"
+    "main.css": "/InfoCrypting/static/css/main.0befd8b6.css",
+    "main.js": "/InfoCrypting/static/js/main.2e2a6921.js",
+    "static/js/453.a14ab0f4.chunk.js": "/InfoCrypting/static/js/453.a14ab0f4.chunk.js",
+    "index.html": "/InfoCrypting/index.html",
+    "main.0befd8b6.css.map": "/InfoCrypting/static/css/main.0befd8b6.css.map",
+    "main.2e2a6921.js.map": "/InfoCrypting/static/js/main.2e2a6921.js.map",
+    "453.a14ab0f4.chunk.js.map": "/InfoCrypting/static/js/453.a14ab0f4.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.0befd8b6.css",
-    "static/js/main.2fd37a2f.js"
+    "static/js/main.2e2a6921.js"
   ]
 }
