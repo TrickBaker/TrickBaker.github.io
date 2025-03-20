@@ -7,9 +7,9 @@
     // Redirect to the main page with a hash route
     var l = window.location;
     
-    // Check if we're at the root - redirect directly to public contact card
+    // Check if we're at the root - redirect directly to private contact card
     if (l.pathname === '/' || l.pathname === '/InfoCrypting/' || l.pathname === '/InfoCrypting') {
-      window.location.replace(l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') + '/InfoCrypting/#/contact?view=public');
+      window.location.replace(l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') + '/InfoCrypting/#/contact');
     } else {
       // For other paths, append them to the hash route
       var pathSegmentsToKeep = 1;
@@ -23,6 +23,6 @@
 </head>
 <body>
   <h1>Redirecting...</h1>
-  <p>If you are not redirected automatically, please <a href="/#/contact?view=public">click here</a>.</p>
+  <p>If you are not redirected automatically, please <a href="/#/contact">click here</a>.</p>
 </body>
 </html> 
