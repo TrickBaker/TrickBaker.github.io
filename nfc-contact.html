@@ -4,8 +4,18 @@
   <meta charset="utf-8">
   <title>InfoCrypting Contact</title>
   <script type="text/javascript">
+    // Check if device is mobile
+    function isMobile() {
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+    }
+    
     // Immediately redirect to the contact page with the correct URL structure
-    window.location.replace("https://trickbaker.github.io/InfoCrypting/#/contact");
+    // Always use private view on mobile
+    if (isMobile()) {
+      window.location.replace("https://trickbaker.github.io/InfoCrypting/#/contact");
+    } else {
+      window.location.replace("https://trickbaker.github.io/InfoCrypting/#/contact?view=public");
+    }
   </script>
 </head>
 <body>
