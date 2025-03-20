@@ -4,20 +4,12 @@
   <meta charset="utf-8">
   <title>Redirecting to InfoCrypting</title>
   <script>
-    // GitHub Pages 404 redirect for SPA
-    var pathSegmentsToKeep = 1;
-    var location = window.location;
-    
-    // Redirect to the correct path with hash routing
-    location.replace(
-      location.protocol + '//' + location.hostname + 
-      (location.port ? ':' + location.port : '') +
-      '/InfoCrypting/#' + 
-      location.pathname.slice('/InfoCrypting'.length)
-    );
+    // Simple redirect to root
+    window.location.href = '/InfoCrypting/';
   </script>
 </head>
 <body>
-  Redirecting to InfoCrypting...
+  <h1>Redirecting...</h1>
+  <p>If you are not redirected automatically, <a href="/InfoCrypting/">click here</a>.</p>
 </body>
 </html> 
