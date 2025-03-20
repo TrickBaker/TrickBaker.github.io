@@ -5,23 +5,37 @@
   <title>Redirecting to InfoCrypting</title>
   <script>
     // Single Page Apps for GitHub Pages
-    // https://github.com/rafrex/spa-github-pages
-    // Copyright (c) 2016 Rafael Pedicini, licensed under the MIT License
+    // Modified version for project pages (not user/org pages)
     // ----------------------------------------------------------------------
-    // This script takes the current url and converts the path and query
-    // string into just a query string, and then redirects the browser
-    // to the new url with only a query string and hash fragment
     
-    var segmentCount = 1;
+    // This script checks if we're in a GitHub Pages repo subdirectory
+    // and handles redirects accordingly
+    var pathSegmentsToKeep = 1; // Keeps /InfoCrypting/ in the path
+    
     var l = window.location;
+    var repoName = "InfoCrypting";
     
-    l.replace(
-      l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-      l.pathname.split('/').slice(0, 1 + segmentCount).join('/') + '/?p=/' +
-      l.pathname.slice(1).split('/').slice(segmentCount).join('/').replace(/&/g, '~and~') +
-      (l.search ? '&q=' + l.search.slice(1).replace(/&/g, '~and~') : '') +
-      l.hash
-    );
+    // Don't redirect if we're already at the root with a proper hash
+    if (l.pathname.split('/')[1] === repoName && !l.search.includes('p=/')) {
+      // Already on the correct page with a hash route
+      if (l.hash) {
+        // No need to redirect
+        window.location = l.href;
+      } else {
+        // Handle clean URL
+        window.location.replace(
+          l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+          '/' + repoName + '/#/'
+        );
+      }
+    } else {
+      // Redirect needed
+      l.replace(
+        l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+        l.pathname.split('/').slice(0, pathSegmentsToKeep + 1).join('/') + '/#/' +
+        l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/')
+      );
+    }
   </script>
 </head>
 <body>
