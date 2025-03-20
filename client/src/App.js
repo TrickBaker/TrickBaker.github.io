@@ -54,7 +54,7 @@ const NavbarWrapper = () => {
 const App = () => {
   return (
     <AuthProvider>
-      <Router>
+      <Router basename="">
         <div className="app-container d-flex flex-column min-vh-100">
           <Routes>
             <Route path="*" element={
