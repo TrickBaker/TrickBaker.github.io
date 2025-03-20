@@ -5,20 +5,24 @@
   <title>InfoCrypting</title>
   <script type="text/javascript">
     // Redirect to the main page with a hash route
-    var pathSegmentsToKeep = 1;
     var l = window.location;
     
-    // Don't try to handle the path, just redirect to the homepage 
-    // and let HashRouter handle the routing
-    var redirectUrl = l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-      l.pathname.split('/').slice(0, pathSegmentsToKeep).join('/') + '/#' + 
-      l.pathname.slice(1);
+    // Check if we're at the root - redirect directly to public contact card
+    if (l.pathname === '/' || l.pathname === '/InfoCrypting/' || l.pathname === '/InfoCrypting') {
+      window.location.replace(l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') + '/InfoCrypting/#/contact?view=public');
+    } else {
+      // For other paths, append them to the hash route
+      var pathSegmentsToKeep = 1;
+      var redirectUrl = l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+        l.pathname.split('/').slice(0, pathSegmentsToKeep).join('/') + '/#' + 
+        l.pathname.slice(1);
       
-    window.location.replace(redirectUrl);
+      window.location.replace(redirectUrl);
+    }
   </script>
 </head>
 <body>
   <h1>Redirecting...</h1>
-  <p>If you are not redirected automatically, please <a href="/">click here</a>.</p>
+  <p>If you are not redirected automatically, please <a href="/#/contact?view=public">click here</a>.</p>
 </body>
 </html> 
