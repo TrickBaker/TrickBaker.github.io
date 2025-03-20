@@ -4,38 +4,17 @@
   <meta charset="utf-8">
   <title>Redirecting to InfoCrypting</title>
   <script>
-    // Single Page Apps for GitHub Pages
-    // Modified version for project pages (not user/org pages)
-    // ----------------------------------------------------------------------
+    // GitHub Pages 404 redirect for SPA
+    var pathSegmentsToKeep = 1;
+    var location = window.location;
     
-    // This script checks if we're in a GitHub Pages repo subdirectory
-    // and handles redirects accordingly
-    var pathSegmentsToKeep = 1; // Keeps /InfoCrypting/ in the path
-    
-    var l = window.location;
-    var repoName = "InfoCrypting";
-    
-    // Don't redirect if we're already at the root with a proper hash
-    if (l.pathname.split('/')[1] === repoName && !l.search.includes('p=/')) {
-      // Already on the correct page with a hash route
-      if (l.hash) {
-        // No need to redirect
-        window.location = l.href;
-      } else {
-        // Handle clean URL
-        window.location.replace(
-          l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-          '/' + repoName + '/#/'
-        );
-      }
-    } else {
-      // Redirect needed
-      l.replace(
-        l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-        l.pathname.split('/').slice(0, pathSegmentsToKeep + 1).join('/') + '/#/' +
-        l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/')
-      );
-    }
+    // Redirect to the correct path with hash routing
+    location.replace(
+      location.protocol + '//' + location.hostname + 
+      (location.port ? ':' + location.port : '') +
+      '/InfoCrypting/#' + 
+      location.pathname.slice('/InfoCrypting'.length)
+    );
   </script>
 </head>
 <body>
