@@ -12,7 +12,7 @@ import { AuthContext } from '../context/AuthContext';
 import '../styles/EditContact.css';
 
 const EditContact = () => {
-  const { isAuthenticated, loading: authLoading } = useContext(AuthContext);
+  const { isAuthenticated, loading: authLoading, getContactData, demoMode } = useContext(AuthContext);
   const navigate = useNavigate();
   
   const [formData, setFormData] = useState({
@@ -60,10 +60,18 @@ const EditContact = () => {
   useEffect(() => {
     const fetchContactData = async () => {
       try {
-        const res = await axios.get('/api/contact');
+        let contactData;
+        
+        if (demoMode) {
+          // Use demo data in GitHub Pages deployment
+          contactData = await getContactData();
+        } else {
+          // Use API in production
+          const res = await axios.get('/api/contact');
+          contactData = res.data;
+        }
         
         // Initialize bank accounts if they don't exist
-        const contactData = res.data;
         if (!contactData.bankAccounts) {
           contactData.bankAccounts = [
             {
@@ -97,7 +105,7 @@ const EditContact = () => {
     if (isAuthenticated) {
       fetchContactData();
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, getContactData, demoMode]);
   
   // Handle form input changes
   const handleChange = (e) => {
@@ -170,19 +178,26 @@ const EditContact = () => {
     setSuccess(false);
     
     try {
-      await axios.put('/api/contact', formData);
-      setSuccess(true);
+      if (demoMode) {
+        // In demo mode, just simulate a successful save
+        await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate network delay
+        setSuccess(true);
+      } else {
+        // In production, save to the server
+        await axios.put('/api/contact', formData);
+        setSuccess(true);
+      }
       setSaving(false);
       
       // Scroll to top to show success message
-      window.scrollTo(0, 0);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
       console.error('Error updating contact data:', err);
       setError('Failed to update contact information');
       setSaving(false);
       
       // Scroll to top to show error message
-      window.scrollTo(0, 0);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
   

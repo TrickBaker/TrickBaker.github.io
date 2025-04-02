@@ -1,17 +1,39 @@
 import React, { useContext } from 'react';
-import { Container, Row, Col, Card, Button } from 'react-bootstrap';
+import { Container, Row, Col, Card, Button, Alert } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { 
   FaMobileAlt, FaQrcode, FaLock, FaUserShield, 
-  FaIdCard, FaShareAlt, FaGlobe, FaRocket
+  FaIdCard, FaShareAlt, FaGlobe, FaRocket,
+  FaInfoCircle
 } from 'react-icons/fa';
 import { AuthContext } from '../context/AuthContext';
 
 const Home = () => {
-  const { isAuthenticated } = useContext(AuthContext);
+  const { isAuthenticated, demoMode } = useContext(AuthContext);
 
   return (
     <Container>
+      {/* Demo Mode Notice */}
+      {demoMode && (
+        <Row className="py-3">
+          <Col>
+            <Alert variant="info">
+              <Alert.Heading>
+                <FaInfoCircle className="me-2" /> Demo Mode Active
+              </Alert.Heading>
+              <p>
+                This is a demo version running on GitHub Pages with your actual contact data, but without a backend server.
+                Changes you make will not be permanently saved since there's no database connection.
+              </p>
+              <hr />
+              <p className="mb-0">
+                <strong>Login with:</strong> Username: <code>admin</code> / Password: <code>password123</code>
+              </p>
+            </Alert>
+          </Col>
+        </Row>
+      )}
+
       {/* Hero Section */}
       <Row className="py-5 align-items-center">
         <Col lg={6} className="mb-5 mb-lg-0">
@@ -34,8 +56,8 @@ const Home = () => {
                   <FaIdCard className="me-2" /> View Contact Card
                 </Button>
               )}
-              <Button as={Link} to="/contact/public" variant="outline-primary" size="lg" className="rounded-pill">
-                <FaGlobe className="me-2" /> Public View
+              <Button as={Link} to="/contact?view=public" variant="outline-primary" size="lg" className="rounded-pill">
+                <FaGlobe className="me-2" /> Public View Only
               </Button>
             </div>
           </div>
@@ -197,6 +219,17 @@ const Home = () => {
             <Button as={Link} to={isAuthenticated ? "/contact" : "/login"} variant="primary" size="lg" className="rounded-pill">
               <FaRocket className="me-2" /> Get Started Now
             </Button>
+            
+            {demoMode && (
+              <div className="mt-4">
+                <p className="text-muted">
+                  <small>
+                    <FaInfoCircle className="me-1" /> 
+                    This demo uses simulated data. For a full experience, the application requires a backend server.
+                  </small>
+                </p>
+              </div>
+            )}
           </div>
         </Col>
       </Row>

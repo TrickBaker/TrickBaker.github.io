@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { HashRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { HashRouter, Routes, Route, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 // Components
@@ -22,6 +22,13 @@ import { AuthProvider } from './context/AuthContext';
 
 // Set default headers for all axios requests
 axios.defaults.headers.common['Content-Type'] = 'application/json';
+
+// Set the base URL for all axios requests - update this with your deployed server URL
+const apiUrl = process.env.NODE_ENV === 'production' 
+  ? 'https://infocrypting-api.herokuapp.com/api' // Change this to your actual deployed server URL
+  : 'http://localhost:5000/api';
+  
+axios.defaults.baseURL = apiUrl;
 
 // NavbarWrapper component to conditionally render Navbar
 const NavbarWrapper = () => {
@@ -54,28 +61,22 @@ const NavbarWrapper = () => {
 const App = () => {
   return (
     <AuthProvider>
-      <Router basename="">
+      <HashRouter>
         <div className="app-container d-flex flex-column min-vh-100">
-          <Routes>
-            <Route path="*" element={
-              <>
-                <NavbarWrapper />
-                <main className="flex-grow-1">
-                  <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/contact" element={<ContactCard />} />
-                    <Route path="/contact/:id" element={<ContactCard />} />
-                    <Route path="/edit" element={<EditContact />} />
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </main>
-                <Footer />
-              </>
-            } />
-          </Routes>
+          <NavbarWrapper />
+          <main className="flex-grow-1">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/contact" element={<ContactCard />} />
+              <Route path="/contact/:id" element={<ContactCard />} />
+              <Route path="/edit" element={<EditContact />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </main>
+          <Footer />
         </div>
-      </Router>
+      </HashRouter>
     </AuthProvider>
   );
 };

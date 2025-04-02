@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { Container, Row, Col, Card, Button, ListGroup, Alert, Spinner, Badge } from 'react-bootstrap';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import { 
   FaEnvelope, FaPhone, FaGlobe, FaMapMarkerAlt, FaLinkedin, 
   FaTwitter, FaGithub, FaInstagram, FaDownload, FaShare,
   FaQrcode, FaMobileAlt, FaUserTie, FaBuilding, FaIdCard, FaEdit, FaUniversity,
-  FaFileInvoiceDollar, FaIdBadge
+  FaFileInvoiceDollar, FaIdBadge, FaCopy, FaCheck
 } from 'react-icons/fa';
 import QRCode from 'qrcode.react';
 import axios from 'axios';
@@ -19,15 +19,31 @@ const ContactCard = () => {
   const [activeTab, setActiveTab] = useState('info');
   const [animateProfile, setAnimateProfile] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const { isAuthenticated } = useContext(AuthContext);
+  const [copied, setCopied] = useState(false);
+  const { isAuthenticated, getContactData, demoMode } = useContext(AuthContext);
   const { id } = useParams();
   const cardRef = useRef(null);
+  const location = useLocation();
+  
+  // Check if view=public is in the URL query parameters
+  const searchParams = new URLSearchParams(location.search);
+  const isPublicView = searchParams.get('view') === 'public';
 
+  // Force private view on mobile devices
+  const [forcedPrivateView, setForcedPrivateView] = useState(false);
+  
   // Add mobile-view class to body when on mobile
   useEffect(() => {
     const handleResize = () => {
       const mobile = window.innerWidth <= 768;
       setIsMobile(mobile);
+      
+      // Force private view on mobile
+      if (mobile && isPublicView) {
+        setForcedPrivateView(true);
+      } else {
+        setForcedPrivateView(false);
+      }
       
       if (mobile) {
         document.body.classList.add('mobile-contact-view');
@@ -47,16 +63,28 @@ const ContactCard = () => {
       window.removeEventListener('resize', handleResize);
       document.body.classList.remove('mobile-contact-view');
     };
-  }, []);
+  }, [isPublicView]);
+
+  // Adjusted public view check - never public on mobile
+  const effectivePublicView = isPublicView && !forcedPrivateView;
+  
+  // For display logic, consider user viewing public data if public view is forced and not on mobile
+  const shouldShowPublicDataOnly = effectivePublicView && !isAuthenticated;
 
   useEffect(() => {
     const fetchContactData = async () => {
       try {
-        // Determine which endpoint to use based on authentication status
-        const endpoint = isAuthenticated ? '/api/contact' : '/api/contact/public';
+        if (demoMode) {
+          // Use the demo contact data from context
+          const data = await getContactData();
+          setContactData(data);
+        } else {
+          // Use the API endpoint for production - force private on mobile
+          const endpoint = isAuthenticated || forcedPrivateView ? '/api/contact' : '/api/contact/public';
+          const res = await axios.get(endpoint);
+          setContactData(res.data);
+        }
         
-        const res = await axios.get(endpoint);
-        setContactData(res.data);
         setLoading(false);
         
         // Trigger animation after data is loaded
@@ -71,7 +99,7 @@ const ContactCard = () => {
     };
 
     fetchContactData();
-  }, [isAuthenticated]);
+  }, [isAuthenticated, getContactData, demoMode, forcedPrivateView]);
 
   // Function to generate vCard
   const generateVCard = () => {
@@ -157,7 +185,7 @@ const ContactCard = () => {
   };
 
   // Function to copy contact info to clipboard
-  const copyContactInfo = () => {
+  const copyContactInfo = async () => {
     if (!contactData) return;
     
     let info = `Name: ${contactData.name}\n`;
@@ -172,7 +200,7 @@ const ContactCard = () => {
       info += `Phone: ${contactData.phone}\n`;
     }
     
-    if (contactData.website) {
+    if (isAuthenticated && contactData.website) {
       info += `Website: ${contactData.website}\n`;
     }
     
@@ -180,124 +208,103 @@ const ContactCard = () => {
       info += `Address: ${contactData.address}\n`;
     }
     
-    if (isAuthenticated && contactData.identificationNumber) {
-      info += `ID Number: ${contactData.identificationNumber}\n`;
+    try {
+      await navigator.clipboard.writeText(info);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
     }
-    
-    if (isAuthenticated && contactData.taxNumber) {
-      info += `Tax Number: ${contactData.taxNumber}\n`;
+  };
+
+  // Function to share contact card
+  const shareContactCard = async () => {
+    if (!navigator.share) {
+      // Fallback to copying URL
+      const url = window.location.href;
+      try {
+        await navigator.clipboard.writeText(url);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch (err) {
+        console.error('Failed to copy URL:', err);
+      }
+      return;
     }
-    
-    // Add bank account information if available
-    if (isAuthenticated && contactData.bankAccounts && contactData.bankAccounts.length > 0) {
-      info += `\nBank Accounts:\n`;
-      
-      contactData.bankAccounts.forEach((account, index) => {
-        if (account.bankName) {
-          info += `\nBank ${index + 1}: ${account.bankName} (${account.accountType})\n`;
-          
-          if (account.accountNumber) {
-            info += `Account Number: ${account.accountNumber}\n`;
-          }
-          
-          if (account.routingNumber) {
-            info += `Routing Number: ${account.routingNumber}\n`;
-          }
-          
-          if (account.swift) {
-            info += `SWIFT/BIC: ${account.swift}\n`;
-          }
-        }
+
+    try {
+      await navigator.share({
+        title: `${contactData.name}'s Contact Card`,
+        text: `Check out ${contactData.name}'s contact information`,
+        url: window.location.href
       });
+    } catch (err) {
+      console.error('Error sharing:', err);
     }
-    
-    if (contactData.bio) {
-      info += `\nAbout Me:\n${contactData.bio}\n`;
-    }
-    
-    navigator.clipboard.writeText(info);
-    alert('Contact information copied to clipboard!');
   };
 
   if (loading) {
     return (
-      <Container className="text-center py-5">
-        <div className="loading-container">
-          <div className="loading-card">
-            <div className="loading-pulse"></div>
-            <Spinner animation="border" variant="primary" className="loading-spinner" />
-            <p className="mt-3 loading-text">Loading your digital business card...</p>
-          </div>
+      <div className="loading-container">
+        <div className="loading-card">
+          <div className="loading-pulse"></div>
         </div>
-      </Container>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <Container className="py-5">
+      <Container className="mt-5">
         <Alert variant="danger">{error}</Alert>
-        <div className="text-center mt-3">
-          <Button as={Link} to="/" variant="primary">
-            Return to Home
-          </Button>
-        </div>
       </Container>
     );
   }
 
   if (!contactData) {
     return (
-      <Container className="py-5">
+      <Container className="mt-5">
         <Alert variant="warning">No contact information available</Alert>
-        <div className="text-center mt-3">
-          <Button as={Link} to="/" variant="primary">
-            Return to Home
-          </Button>
-        </div>
       </Container>
     );
   }
 
-  // Generate the current URL for QR code
-  const currentUrl = window.location.href;
-
   return (
-    <Container className={`contact-card-container py-4 ${isMobile ? 'mobile-view' : ''}`}>
+    <Container className="contact-card-container">
       <div className="digital-card-wrapper">
-        <div className={`profile-card ${animateProfile ? 'animate' : ''}`} ref={cardRef}>
+        <Card ref={cardRef} className={`profile-card ${animateProfile ? 'animate' : ''}`}>
           <div className="card-header-tabs">
             <div 
-              className={`tab-item ${activeTab === 'info' ? 'active' : ''}`} 
+              className={`tab-item ${activeTab === 'info' ? 'active' : ''}`}
               onClick={() => setActiveTab('info')}
             >
-              <FaIdCard /> Info
+              <FaUserTie /> Info
             </div>
             <div 
-              className={`tab-item ${activeTab === 'share' ? 'active' : ''}`} 
+              className={`tab-item ${activeTab === 'share' ? 'active' : ''}`}
               onClick={() => setActiveTab('share')}
             >
               <FaShare /> Share
             </div>
             {isAuthenticated && (
               <div 
-                className={`tab-item ${activeTab === 'nfc' ? 'active' : ''}`} 
-                onClick={() => setActiveTab('nfc')}
+                className={`tab-item ${activeTab === 'bank' ? 'active' : ''}`}
+                onClick={() => setActiveTab('bank')}
               >
-                <FaMobileAlt /> NFC
+                <FaFileInvoiceDollar /> Bank
               </div>
             )}
           </div>
 
           <div className="tab-content">
             {activeTab === 'info' && (
-              <div className="info-tab">
+              <>
                 <div className="profile-header">
                   <div className="profile-image-container">
                     {contactData.profileImage ? (
-                      <img
-                        src={contactData.profileImage}
-                        alt={contactData.name}
+                      <img 
+                        src={contactData.profileImage} 
+                        alt={contactData.name} 
                         className="profile-image"
                       />
                     ) : (
@@ -305,24 +312,23 @@ const ContactCard = () => {
                         {contactData.name.charAt(0)}
                       </div>
                     )}
-                    <div className="profile-glow"></div>
                   </div>
                   <div className="profile-title">
                     <h2 className="name">{contactData.name}</h2>
                     <div className="title-badge">
                       <FaUserTie className="icon" />
-                      <span>{contactData.title}</span>
+                      {contactData.title}
                     </div>
                     <div className="company-badge">
                       <FaBuilding className="icon" />
-                      <span>{contactData.company}</span>
+                      {contactData.company}
                     </div>
                   </div>
                 </div>
 
-                <div className="contact-details">
+                <ListGroup className="contact-details">
                   {isAuthenticated && contactData.email && (
-                    <div className="contact-item email-item">
+                    <ListGroup.Item className="contact-item email-item">
                       <div className="icon-container">
                         <FaEnvelope className="contact-icon" />
                       </div>
@@ -332,11 +338,11 @@ const ContactCard = () => {
                           {contactData.email}
                         </a>
                       </div>
-                    </div>
+                    </ListGroup.Item>
                   )}
-                  
+
                   {isAuthenticated && contactData.phone && (
-                    <div className="contact-item phone-item">
+                    <ListGroup.Item className="contact-item phone-item">
                       <div className="icon-container">
                         <FaPhone className="contact-icon" />
                       </div>
@@ -346,25 +352,25 @@ const ContactCard = () => {
                           {contactData.phone}
                         </a>
                       </div>
-                    </div>
+                    </ListGroup.Item>
                   )}
-                  
+
                   {contactData.website && (
-                    <div className="contact-item website-item">
+                    <ListGroup.Item className="contact-item website-item">
                       <div className="icon-container">
                         <FaGlobe className="contact-icon" />
                       </div>
                       <div className="contact-info">
                         <div className="label">Website</div>
                         <a href={contactData.website} target="_blank" rel="noopener noreferrer" className="value">
-                          {contactData.website.replace(/^https?:\/\//, '')}
+                          {contactData.website}
                         </a>
                       </div>
-                    </div>
+                    </ListGroup.Item>
                   )}
-                  
-                  {isAuthenticated && contactData.address && (
-                    <div className="contact-item address-item">
+
+                  {contactData.address && (
+                    <ListGroup.Item className="contact-item address-item">
                       <div className="icon-container">
                         <FaMapMarkerAlt className="contact-icon" />
                       </div>
@@ -372,23 +378,23 @@ const ContactCard = () => {
                         <div className="label">Address</div>
                         <div className="value">{contactData.address}</div>
                       </div>
-                    </div>
+                    </ListGroup.Item>
                   )}
 
                   {isAuthenticated && contactData.identificationNumber && (
-                    <div className="contact-item id-item">
+                    <ListGroup.Item className="contact-item id-item">
                       <div className="icon-container">
-                        <FaIdBadge className="contact-icon" />
+                        <FaIdCard className="contact-icon" />
                       </div>
                       <div className="contact-info">
-                        <div className="label">Identification Number</div>
+                        <div className="label">ID Number</div>
                         <div className="value">{contactData.identificationNumber}</div>
                       </div>
-                    </div>
+                    </ListGroup.Item>
                   )}
 
                   {isAuthenticated && contactData.taxNumber && (
-                    <div className="contact-item tax-item">
+                    <ListGroup.Item className="contact-item tax-item">
                       <div className="icon-container">
                         <FaFileInvoiceDollar className="contact-icon" />
                       </div>
@@ -396,88 +402,57 @@ const ContactCard = () => {
                         <div className="label">Tax Number</div>
                         <div className="value">{contactData.taxNumber}</div>
                       </div>
-                    </div>
+                    </ListGroup.Item>
                   )}
-                </div>
+                </ListGroup>
 
-                {isAuthenticated && contactData.bankAccounts && contactData.bankAccounts.length > 0 && (
-                  <div className="bank-accounts-section">
-                    <h4>Bank Account Information</h4>
-                    {contactData.bankAccounts.map((account, index) => (
-                      <div key={index} className="bank-account-item">
-                        <div className="bank-header">
-                          <FaUniversity className="bank-icon" />
-                          <h5>{account.bankName || 'Bank Account'} ({account.accountType})</h5>
-                        </div>
-                        <div className="bank-details">
-                          {account.accountNumber && (
-                            <div className="bank-detail">
-                              <span className="detail-label">Account Number:</span>
-                              <span className="detail-value">{account.accountNumber}</span>
-                            </div>
-                          )}
-                          {account.routingNumber && (
-                            <div className="bank-detail">
-                              <span className="detail-label">Routing Number:</span>
-                              <span className="detail-value">{account.routingNumber}</span>
-                            </div>
-                          )}
-                          {account.swift && (
-                            <div className="bank-detail">
-                              <span className="detail-label">SWIFT/BIC:</span>
-                              <span className="detail-value">{account.swift}</span>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    ))}
+                {contactData.bio && (
+                  <div className="bio-section">
+                    <h4>About</h4>
+                    <p>{contactData.bio}</p>
                   </div>
                 )}
 
-                {contactData.socials && Object.keys(contactData.socials).length > 0 && (
+                {contactData.socialLinks && (
                   <div className="social-links">
-                    <h4>Connect With Me</h4>
+                    <h4>Social Media</h4>
                     <div className="social-icons">
-                      {contactData.socials.linkedin && (
-                        <a
-                          href={contactData.socials.linkedin}
-                          target="_blank"
+                      {contactData.socialLinks.linkedin && (
+                        <a 
+                          href={contactData.socialLinks.linkedin} 
+                          target="_blank" 
                           rel="noopener noreferrer"
                           className="social-icon linkedin"
-                          aria-label="LinkedIn"
                         >
                           <FaLinkedin />
                         </a>
                       )}
-                      {contactData.socials.twitter && (
-                        <a
-                          href={contactData.socials.twitter}
-                          target="_blank"
+                      {contactData.socialLinks.twitter && (
+                        <a 
+                          href={contactData.socialLinks.twitter} 
+                          target="_blank" 
                           rel="noopener noreferrer"
                           className="social-icon twitter"
-                          aria-label="Twitter"
                         >
                           <FaTwitter />
                         </a>
                       )}
-                      {contactData.socials.github && (
-                        <a
-                          href={contactData.socials.github}
-                          target="_blank"
+                      {contactData.socialLinks.github && (
+                        <a 
+                          href={contactData.socialLinks.github} 
+                          target="_blank" 
                           rel="noopener noreferrer"
                           className="social-icon github"
-                          aria-label="GitHub"
                         >
                           <FaGithub />
                         </a>
                       )}
-                      {contactData.socials.instagram && (
-                        <a
-                          href={contactData.socials.instagram}
-                          target="_blank"
+                      {contactData.socialLinks.instagram && (
+                        <a 
+                          href={contactData.socialLinks.instagram} 
+                          target="_blank" 
                           rel="noopener noreferrer"
                           className="social-icon instagram"
-                          aria-label="Instagram"
                         >
                           <FaInstagram />
                         </a>
@@ -486,153 +461,103 @@ const ContactCard = () => {
                   </div>
                 )}
 
-                {contactData.bio && (
-                  <div className="bio-section">
-                    <h4>About Me</h4>
-                    <p>{contactData.bio}</p>
-                  </div>
-                )}
-
                 <div className="action-buttons">
                   <Button 
                     variant="primary" 
-                    className="action-button save-button"
-                    onClick={downloadVCard}
-                  >
-                    <FaDownload className="button-icon" /> Save Contact
-                  </Button>
-                  <Button 
-                    variant="outline-primary" 
-                    className="action-button copy-button"
+                    className="action-button"
                     onClick={copyContactInfo}
                   >
-                    <FaShare className="button-icon" /> Copy Info
+                    {copied ? <FaCheck /> : <FaCopy />}
+                    {copied ? 'Copied!' : 'Copy Contact'}
                   </Button>
-                  {isAuthenticated && (
-                    <Button 
-                      variant="outline-success" 
-                      className="action-button edit-button"
-                      as={Link}
-                      to="/edit"
-                    >
-                      <FaEdit className="button-icon" /> Edit Info
-                    </Button>
-                  )}
+                  <Button 
+                    variant="success" 
+                    className="action-button"
+                    onClick={downloadVCard}
+                  >
+                    <FaDownload />
+                    Download vCard
+                  </Button>
                 </div>
-
-                {!isAuthenticated && (
-                  <div className="login-prompt">
-                    <Alert variant="info" className="mb-0">
-                      <strong>Note:</strong> Some contact information is hidden.{' '}
-                      <Link to="/login" className="login-link">Login</Link> to view all details.
-                    </Alert>
-                  </div>
-                )}
-              </div>
+              </>
             )}
 
             {activeTab === 'share' && (
               <div className="share-tab">
-                <h3 className="tab-title">Share My Contact</h3>
                 <div className="qr-section">
+                  <h4>Scan QR Code</h4>
                   <div className="qr-container">
                     <QRCode 
-                      value={currentUrl} 
+                      value={window.location.href} 
                       size={200} 
                       level="H"
-                      renderAs="svg"
                       includeMargin={true}
                       className="qr-code"
                     />
                   </div>
-                  <p className="qr-instructions">Scan this QR code to access this contact card</p>
+                  <p className="qr-instructions">
+                    Scan this QR code with your smartphone to view the contact card
+                  </p>
                 </div>
-                
+
                 <div className="share-buttons">
                   <Button 
-                    variant="success" 
+                    variant="primary" 
                     className="share-button"
-                    onClick={() => window.print()}
+                    onClick={shareContactCard}
                   >
-                    <FaDownload className="button-icon" /> Print Card
+                    <FaShare />
+                    Share Contact Card
                   </Button>
-                  
-                  <Button
-                    variant="primary"
-                    className="share-button"
-                    onClick={() => {
-                      navigator.clipboard.writeText(currentUrl);
-                      alert('URL copied to clipboard!');
-                    }}
-                  >
-                    <FaShare className="button-icon" /> Copy URL
-                  </Button>
-                  
-                  {navigator.share && (
-                    <Button
-                      variant="info"
-                      className="share-button"
-                      onClick={() => {
-                        navigator.share({
-                          title: `${contactData.name}'s Contact Card`,
-                          text: `Check out ${contactData.name}'s contact information`,
-                          url: currentUrl,
-                        });
-                      }}
-                    >
-                      <FaShare className="button-icon" /> Share
-                    </Button>
-                  )}
                 </div>
               </div>
             )}
 
-            {activeTab === 'nfc' && isAuthenticated && (
-              <div className="nfc-tab">
-                <h3 className="tab-title">NFC Setup</h3>
-                <div className="nfc-instructions">
-                  <div className="nfc-icon-container">
-                    <FaMobileAlt className="nfc-icon" />
+            {activeTab === 'bank' && isAuthenticated && (
+              <div className="bank-accounts-section">
+                <h4>Bank Accounts</h4>
+                {contactData.bankAccounts && contactData.bankAccounts.map((account, index) => (
+                  <div key={index} className="bank-account-item">
+                    <div className="bank-header">
+                      <FaUniversity className="bank-icon" />
+                      <h5>{account.bankName}</h5>
+                    </div>
+                    <div className="bank-details">
+                      <div className="bank-detail">
+                        <span className="detail-label">Account Type:</span>
+                        <span className="detail-value">{account.accountType}</span>
+                      </div>
+                      {account.accountNumber && (
+                        <div className="bank-detail">
+                          <span className="detail-label">Account Number:</span>
+                          <span className="detail-value">{account.accountNumber}</span>
+                        </div>
+                      )}
+                      {account.routingNumber && (
+                        <div className="bank-detail">
+                          <span className="detail-label">Routing Number:</span>
+                          <span className="detail-value">{account.routingNumber}</span>
+                        </div>
+                      )}
+                      {account.swift && (
+                        <div className="bank-detail">
+                          <span className="detail-label">SWIFT/BIC:</span>
+                          <span className="detail-value">{account.swift}</span>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  <h4>Program Your NFC Tag</h4>
-                  <ol className="instruction-steps">
-                    <li>Use an NFC writing app on your smartphone</li>
-                    <li>Select "Write URL" or "Website" option</li>
-                    <li>Enter this URL:</li>
-                  </ol>
-                  <div className="url-display">
-                    <code>{currentUrl}</code>
-                    <Button
-                      variant="outline-secondary"
-                      size="sm"
-                      className="copy-url-btn"
-                      onClick={() => {
-                        navigator.clipboard.writeText(currentUrl);
-                        alert('URL copied to clipboard!');
-                      }}
-                    >
-                      Copy
-                    </Button>
-                  </div>
-                  <li>Hold your phone near the NFC tag to write</li>
-                  <div className="nfc-note">
-                    <p>
-                      <small className="text-muted">
-                        Once programmed, anyone can tap the NFC tag with their phone to view this contact card.
-                      </small>
-                    </p>
-                  </div>
-                </div>
+                ))}
               </div>
             )}
           </div>
-          
+
           <div className="card-footer">
             <div className="powered-by">
               Powered by <span className="brand">InfoCrypting</span>
             </div>
           </div>
-        </div>
+        </Card>
       </div>
     </Container>
   );
