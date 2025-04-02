@@ -1,66 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="InfoCrypting - Digital Contact Card"
-    />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <title>InfoCrypting</title>
-    <style>
-      body {
-        margin: 0;
-        padding: 20px;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        min-height: 100vh;
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-      }
-      .loading-container {
-        text-align: center;
-      }
-      .loading-text {
-        margin-top: 20px;
-        color: #2c3e50;
-      }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found</title>
     <script type="text/javascript">
       // Single Page Apps for GitHub Pages
       // MIT License
       // https://github.com/rafgraph/spa-github-pages
-      var pathSegmentsToKeep = 0;
+      var pathSegmentsToKeep = 1;
       var l = window.location;
       var r = l.pathname.split('/').slice(1);
-      var s = r.slice(pathSegmentsToKeep).join('/');
-      var m = l.pathname.slice(0, 1).split('/').slice(-1).toString() === '' ? '/' : '';
-      var g = (s.slice(-1) === '/' ? s : s + '/');
-      var f = g + 'index.html';
-      var h = l.origin + m + g;
-      var u = l.href;
-      var t = h + u.slice(u.indexOf('?') + 1);
-      var k = document.querySelector('script[src*="spa-github-pages"]');
-      var e = k ? k.getAttribute('src').split('spa-github-pages/')[1].slice(0, -3) : '';
-      var o = 'https://cdn.jsdelivr.net/gh/rafgraph/spa-github-pages@' + e + '/spa-github-pages.js';
-      var i = document.createElement('script');
-      i.async = true;
-      i.src = o;
-      document.body.appendChild(i);
+      var i = r.length - pathSegmentsToKeep;
+      var repo = r.slice(0, i).join('/');
+      var rest = r.slice(i).join('/');
+      var p = l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') + '/' + repo + '/?p=' + rest;
+      window.location.replace(p);
     </script>
   </head>
   <body>
-    <div class="loading-container">
-      <div id="root">
-        <h1>Loading...</h1>
-        <p class="loading-text">Please wait while we redirect you to the correct page.</p>
-      </div>
-    </div>
+    <noscript>
+      <h1>404 - Page Not Found</h1>
+      <p>Please enable JavaScript to be redirected to the correct page.</p>
+    </noscript>
   </body>
 </html> 
