@@ -1,28 +1,42 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>InfoCrypting</title>
-  <script type="text/javascript">
-    // Redirect to the main page with a hash route
-    var l = window.location;
-    
-    // Check if we're at the root - redirect directly to private contact card
-    if (l.pathname === '/' || l.pathname === '/InfoCrypting/' || l.pathname === '/InfoCrypting') {
-      window.location.replace(l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') + '/InfoCrypting/#/contact');
-    } else {
-      // For other paths, append them to the hash route
-      var pathSegmentsToKeep = 1;
-      var redirectUrl = l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-        l.pathname.split('/').slice(0, pathSegmentsToKeep).join('/') + '/#' + 
-        l.pathname.slice(1);
-      
-      window.location.replace(redirectUrl);
-    }
-  </script>
-</head>
-<body>
-  <h1>Redirecting...</h1>
-  <p>If you are not redirected automatically, please <a href="/#/contact">click here</a>.</p>
-</body>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="InfoCrypting - Digital Contact Card"
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <title>InfoCrypting</title>
+    <script type="text/javascript">
+      // Single Page Apps for GitHub Pages
+      // MIT License
+      // https://github.com/rafgraph/spa-github-pages
+      var pathSegmentsToKeep = 0;
+      var l = window.location;
+      var r = l.pathname.split('/').slice(1);
+      var s = r.slice(pathSegmentsToKeep).join('/');
+      var m = l.pathname.slice(0, 1).split('/').slice(-1).toString() === '' ? '/' : '';
+      var g = (s.slice(-1) === '/' ? s : s + '/');
+      var f = g + 'index.html';
+      var h = l.origin + m + g;
+      var u = l.href;
+      var t = h + u.slice(u.indexOf('?') + 1);
+      var k = document.querySelector('script[src*="spa-github-pages"]');
+      var e = k ? k.getAttribute('src').split('spa-github-pages/')[1].slice(0, -3) : '';
+      var o = 'https://cdn.jsdelivr.net/gh/rafgraph/spa-github-pages@' + e + '/spa-github-pages.js';
+      var i = document.createElement('script');
+      i.async = true;
+      i.src = o;
+      document.body.appendChild(i);
+    </script>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+  </body>
 </html> 
