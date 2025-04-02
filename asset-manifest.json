@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/InfoCrypting/static/css/main.2c63f08c.css",
-    "main.js": "/InfoCrypting/static/js/main.992e3d36.js",
+    "main.js": "/InfoCrypting/static/js/main.c30d15c8.js",
     "static/js/453.a14ab0f4.chunk.js": "/InfoCrypting/static/js/453.a14ab0f4.chunk.js",
     "index.html": "/InfoCrypting/index.html",
     "main.2c63f08c.css.map": "/InfoCrypting/static/css/main.2c63f08c.css.map",
-    "main.992e3d36.js.map": "/InfoCrypting/static/js/main.992e3d36.js.map",
+    "main.c30d15c8.js.map": "/InfoCrypting/static/js/main.c30d15c8.js.map",
     "453.a14ab0f4.chunk.js.map": "/InfoCrypting/static/js/453.a14ab0f4.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.2c63f08c.css",
-    "static/js/main.992e3d36.js"
+    "static/js/main.c30d15c8.js"
   ]
 }
